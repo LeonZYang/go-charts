@@ -37,10 +37,11 @@ type labelRenderValue struct {
 }
 
 type LabelValue struct {
-	Index int
-	Value float64
-	X     int
-	Y     int
+	Index  int
+	YIndex int
+	Value  float64
+	X      int
+	Y      int
 	// 旋转
 	Radians float64
 	// 字体颜色
@@ -54,6 +55,7 @@ type LabelValue struct {
 type SeriesLabelPainter struct {
 	p           *Painter
 	seriesNames []string
+	yAxisNames  []string
 	label       *SeriesLabel
 	theme       ColorPalette
 	font        *truetype.Font
@@ -63,6 +65,7 @@ type SeriesLabelPainter struct {
 type SeriesLabelPainterParams struct {
 	P           *Painter
 	SeriesNames []string
+	YAxisNames  []string
 	Label       SeriesLabel
 	Theme       ColorPalette
 	Font        *truetype.Font
@@ -73,6 +76,7 @@ func NewSeriesLabelPainter(params SeriesLabelPainterParams) *SeriesLabelPainter 
 		p:           params.P,
 		seriesNames: params.SeriesNames,
 		label:       &params.Label,
+		yAxisNames:  params.YAxisNames,
 		theme:       params.Theme,
 		font:        params.Font,
 		values:      make([]labelRenderValue, 0),
@@ -85,7 +89,9 @@ func (o *SeriesLabelPainter) Add(value LabelValue) {
 	if distance == 0 {
 		distance = 5
 	}
-	text := NewValueLabelFormatter(o.seriesNames, label.Formatter)(value.Index, value.Value, -1)
+
+	text := NewValueLabelFormatter(o.seriesNames, o.yAxisNames, label.Formatter)(value.Index, value.YIndex, value.Value, -1)
+
 	labelStyle := Style{
 		FontColor: o.theme.GetTextColor(),
 		FontSize:  labelFontSize,

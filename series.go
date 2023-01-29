@@ -71,6 +71,7 @@ type SeriesLabel struct {
 	// Data label formatter, which supports string template.
 	// {b}: the name of a data item.
 	// {c}: the value of a data item.
+	// {y}: yaixs name of a data
 	// {d}: the percent of a data item(pie chart).
 	Formatter string
 	// The color for label
@@ -269,14 +270,14 @@ func (sl SeriesList) Names() []string {
 }
 
 // LabelFormatter label formatter
-type LabelFormatter func(index int, value float64, percent float64) string
+type LabelFormatter func(index, yIndex int, value float64, percent float64) string
 
 // NewPieLabelFormatter returns a pie label formatter
 func NewPieLabelFormatter(seriesNames []string, layout string) LabelFormatter {
 	if len(layout) == 0 {
 		layout = "{b}: {d}"
 	}
-	return NewLabelFormatter(seriesNames, layout)
+	return NewLabelFormatter(seriesNames, nil, layout)
 }
 
 // NewFunnelLabelFormatter returns a funner label formatter
@@ -284,20 +285,20 @@ func NewFunnelLabelFormatter(seriesNames []string, layout string) LabelFormatter
 	if len(layout) == 0 {
 		layout = "{b}({d})"
 	}
-	return NewLabelFormatter(seriesNames, layout)
+	return NewLabelFormatter(seriesNames, nil, layout)
 }
 
 // NewValueLabelFormatter returns a value formatter
-func NewValueLabelFormatter(seriesNames []string, layout string) LabelFormatter {
+func NewValueLabelFormatter(seriesNames, yAixsNames []string, layout string) LabelFormatter {
 	if len(layout) == 0 {
 		layout = "{c}"
 	}
-	return NewLabelFormatter(seriesNames, layout)
+	return NewLabelFormatter(seriesNames, yAixsNames, layout)
 }
 
 // NewLabelFormatter returns a label formaatter
-func NewLabelFormatter(seriesNames []string, layout string) LabelFormatter {
-	return func(index int, value, percent float64) string {
+func NewLabelFormatter(seriesNames, yAixsNames []string, layout string) LabelFormatter {
+	return func(index, yIndex int, value, percent float64) string {
 		// 如果无percent的则设置为<0
 		percentText := ""
 		if percent >= 0 {
@@ -305,12 +306,18 @@ func NewLabelFormatter(seriesNames []string, layout string) LabelFormatter {
 		}
 		valueText := humanize.FtoaWithDigits(value, 2)
 		name := ""
+
 		if len(seriesNames) > index {
 			name = seriesNames[index]
+		}
+		yAixsName := ""
+		if len(yAixsNames) > yIndex {
+			yAixsName = yAixsNames[yIndex]
 		}
 		text := strings.ReplaceAll(layout, "{c}", valueText)
 		text = strings.ReplaceAll(text, "{d}", percentText)
 		text = strings.ReplaceAll(text, "{b}", name)
+		text = strings.ReplaceAll(text, "{y}", yAixsName)
 		return text
 	}
 }

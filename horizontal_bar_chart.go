@@ -112,6 +112,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 			labelPainter = NewSeriesLabelPainter(SeriesLabelPainterParams{
 				P:           seriesPainter,
 				SeriesNames: seriesNames,
+				YAxisNames:  h.opt.YAxisOptions[0].Data,
 				Label:       series.Label,
 				Theme:       opt.Theme,
 				Font:        opt.Font,
@@ -151,6 +152,7 @@ func (h *horizontalBarChart) render(result *defaultRenderResult, seriesList Seri
 			labelValue := LabelValue{
 				Orient:    OrientHorizontal,
 				Index:     index,
+				YIndex:    j,
 				Value:     item.Value,
 				X:         right,
 				Y:         y + barHeight>>1,

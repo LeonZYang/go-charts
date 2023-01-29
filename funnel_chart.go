@@ -108,7 +108,7 @@ func (f *funnelChart) render(result *defaultRenderResult, seriesList SeriesList)
 		if max != 0 {
 			percent = value / max
 		}
-		textList[index] = NewFunnelLabelFormatter(seriesNames, item.Label.Formatter)(index, value, percent)
+		textList[index] = NewFunnelLabelFormatter(seriesNames, item.Label.Formatter)(index, -1, value, percent)
 	}
 
 	for index, w := range widthList {

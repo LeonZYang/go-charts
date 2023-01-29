@@ -181,7 +181,7 @@ func (p *pieChart) render(result *defaultRenderResult, seriesList SeriesList) (B
 			textStyle.FontColor = series.Label.Color
 		}
 		seriesPainter.OverrideTextStyle(textStyle)
-		text := NewPieLabelFormatter(seriesNames, series.Label.Formatter)(index, v, percent)
+		text := NewPieLabelFormatter(seriesNames, series.Label.Formatter)(index, -1, v, percent)
 		textBox := seriesPainter.MeasureText(text)
 		textMargin := 3
 		x := endx + textMargin
